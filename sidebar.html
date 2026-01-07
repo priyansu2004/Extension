@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elementor Converter - Inspector</title>
+    <link rel="stylesheet" href="styles/sidebar.css">
+</head>
+<body>
+    <div class="sidebar-container">
+        <div class="sidebar-header">
+            <h2>Elementor Converter</h2>
+            <button id="btn-close-sidebar" class="btn-close" title="Close Sidebar">×</button>
+        </div>
+        
+        <div class="sidebar-tabs">
+            <button class="tab-btn active" data-tab="elements">Elements</button>
+            <button class="tab-btn" data-tab="styles">Styles</button>
+            <button class="tab-btn" data-tab="elementor">Elementor</button>
+            <button class="tab-btn" data-tab="export">Export</button>
+        </div>
+        
+        <div class="sidebar-content">
+            <!-- Elements Tab -->
+            <div class="tab-panel active" id="tab-elements">
+                <div class="panel-header">
+                    <h3>Selected Elements</h3>
+                    <button id="btn-refresh" class="btn-icon" title="Refresh">🔄</button>
+                </div>
+                <div class="elements-list" id="elements-list">
+                    <div class="empty-state">
+                        <p>No elements selected</p>
+                        <p class="hint">Use the overlay to select elements from the page</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Styles Tab -->
+            <div class="tab-panel" id="tab-styles">
+                <div class="panel-header">
+                    <h3>Extracted Styles</h3>
+                </div>
+                <div class="styles-viewer" id="styles-viewer">
+                    <div class="empty-state">
+                        <p>No styles extracted</p>
+                        <p class="hint">Analyze elements to see their styles</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Elementor Tab -->
+            <div class="tab-panel" id="tab-elementor">
+                <div class="panel-header">
+                    <h3>Elementor Mapping</h3>
+                </div>
+                <div class="elementor-viewer" id="elementor-viewer">
+                    <div class="empty-state">
+                        <p>No Elementor data</p>
+                        <p class="hint">Analyze elements to see Elementor widget mappings</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Tab -->
+            <div class="tab-panel" id="tab-export">
+                <div class="panel-header">
+                    <h3>Export Options</h3>
+                </div>
+                <div class="export-panel">
+                    <div class="export-option">
+                        <h4>Export Format</h4>
+                        <select id="export-format" class="form-select">
+                            <option value="json">Elementor JSON</option>
+                            <option value="html">HTML Scaffold</option>
+                            <option value="reference">Design Reference</option>
+                        </select>
+                    </div>
+                    
+                    <div class="export-option">
+                        <h4>Export Options</h4>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="include-responsive" checked>
+                            Include Responsive Styles
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="include-animations" checked>
+                            Include Animations
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="minify-output">
+                            Minify Output
+                        </label>
+                    </div>
+                    
+                    <div class="export-actions">
+                        <button id="btn-export-download" class="btn-primary">
+                            📥 Download
+                        </button>
+                        <button id="btn-export-copy" class="btn-secondary">
+                            📋 Copy to Clipboard
+                        </button>
+                    </div>
+                    
+                    <div class="export-history" id="export-history">
+                        <h4>Recent Exports</h4>
+                        <div class="history-list" id="history-list">
+                            <div class="empty-state">
+                                <p>No recent exports</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="status-indicator" id="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Ready</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="sidebar.js"></script>
+</body>
+</html>
