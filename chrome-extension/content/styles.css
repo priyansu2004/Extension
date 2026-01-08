@@ -1,0 +1,655 @@
+/**
+ * HTML to Elementor Converter - Extension Styles
+ * Complete styling for sidebar, overlays, and UI components
+ */
+
+/* Reset and base styles for sidebar */
+#elementor-converter-sidebar * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#elementor-converter-sidebar {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #ffffff;
+  background: #1e1e1e;
+}
+
+/* Sidebar Header */
+.elementor-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #2a2a2a;
+  border-bottom: 1px solid #404040;
+  flex-shrink: 0;
+}
+
+.elementor-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.elementor-logo svg {
+  width: 24px;
+  height: 24px;
+}
+
+.elementor-sidebar-title h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.elementor-sidebar-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* View Mode Buttons */
+.elementor-view-modes {
+  display: flex;
+  background: #404040;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.elementor-view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #a0a0a0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.elementor-view-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.elementor-view-btn.active {
+  color: #4a90e2;
+  background: #1e1e1e;
+}
+
+/* Close Button */
+.elementor-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #a0a0a0;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.elementor-close-btn:hover {
+  color: #ffffff;
+  background: #e94b4b;
+}
+
+/* Sidebar Content */
+.elementor-sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.elementor-sidebar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.elementor-sidebar-content::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+.elementor-sidebar-content::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 3px;
+}
+
+.elementor-sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a;
+}
+
+/* Panel Styling */
+.elementor-panel {
+  border-bottom: 1px solid #404040;
+}
+
+.elementor-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #2a2a2a;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.elementor-panel-header:hover {
+  background: #333333;
+}
+
+.elementor-panel-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.elementor-panel-content {
+  padding: 16px;
+}
+
+/* Clear All Button */
+.elementor-clear-all-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #a0a0a0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.elementor-clear-all-btn:hover {
+  color: #ffffff;
+  background: #e94b4b;
+}
+
+/* Selection Info Styles */
+.elementor-no-selection {
+  text-align: center;
+  padding: 24px 16px;
+  color: #a0a0a0;
+}
+
+.elementor-empty-icon {
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.elementor-no-selection p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.elementor-element-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.elementor-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.elementor-info-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a90e2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.elementor-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  background: #4a90e2;
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
+}
+
+.elementor-text-content {
+  padding: 8px 12px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  border-left: 3px solid #4a90e2;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #e0e0e0;
+  word-break: break-word;
+}
+
+.elementor-typography-info,
+.elementor-spacing-info,
+.elementor-background-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.elementor-color-preview {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #444;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.elementor-attributes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.elementor-id,
+.elementor-class {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.elementor-id {
+  background: #4a90e2;
+  color: white;
+}
+
+.elementor-class {
+  background: #2a2a2a;
+  color: #00d084;
+  border: 1px solid #404040;
+}
+
+/* Elements List Styles */
+.elementor-no-elements {
+  text-align: center;
+  padding: 24px 16px;
+  color: #a0a0a0;
+}
+
+.elementor-no-elements p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.elementor-element-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #333333;
+  transition: background 0.2s ease;
+}
+
+.elementor-element-item:last-child {
+  border-bottom: none;
+}
+
+.elementor-element-item:hover {
+  background: #2a2a2a;
+  border-radius: 6px;
+  margin: 0 -12px;
+  padding: 12px;
+}
+
+.elementor-element-info-brief {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.elementor-element-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a90e2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.elementor-element-text {
+  font-size: 13px;
+  color: #e0e0e0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.elementor-element-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.elementor-element-item:hover .elementor-element-actions {
+  opacity: 1;
+}
+
+.elementor-highlight-btn,
+.elementor-remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #a0a0a0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.elementor-highlight-btn:hover {
+  color: #ffffff;
+  background: #4a90e2;
+}
+
+.elementor-remove-btn:hover {
+  color: #ffffff;
+  background: #e94b4b;
+}
+
+/* Export Section Styles */
+.elementor-export-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.elementor-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  outline: none;
+}
+
+.elementor-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.elementor-btn-primary {
+  background: #00d084;
+  color: white;
+}
+
+.elementor-btn-primary:hover:not(:disabled) {
+  background: #00b574;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 208, 132, 0.3);
+}
+
+.elementor-btn-secondary {
+  background: #4a4a4a;
+  color: white;
+  border: 1px solid #606060;
+}
+
+.elementor-btn-secondary:hover:not(:disabled) {
+  background: #5a5a5a;
+  border-color: #707070;
+}
+
+.elementor-btn-tertiary {
+  background: transparent;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+}
+
+.elementor-btn-tertiary:hover:not(:disabled) {
+  background: #4a90e2;
+  color: white;
+}
+
+/* Export Stats */
+.elementor-stats {
+  padding: 12px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  border-left: 3px solid #00d084;
+}
+
+.elementor-stat-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.elementor-stat-item:last-child {
+  margin-bottom: 0;
+}
+
+.elementor-stat-item label {
+  color: #a0a0a0;
+  font-weight: 500;
+}
+
+/* Resize Handle */
+.elementor-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: transparent;
+  cursor: ew-resize;
+  z-index: 1000001;
+}
+
+.elementor-resize-handle:hover {
+  background: #4a90e2;
+}
+
+.elementor-resize-handle::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 8px;
+  height: 100%;
+}
+
+/* Overlay Styles for Hover */
+#elementor-hover-overlay {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid #4a90e2;
+  background: rgba(74, 144, 226, 0.1);
+  z-index: 999998;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+/* Element Label */
+#elementor-element-label {
+  position: absolute;
+  background: #4a90e2;
+  color: white;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  z-index: 999999;
+  border-radius: 2px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Selection Overlays */
+.elementor-selected-element-overlay {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid #00d084;
+  background: rgba(0, 208, 132, 0.1);
+  z-index: 999996;
+  box-sizing: border-box;
+}
+
+/* Notification Styles */
+.elementor-notification {
+  position: fixed;
+  top: 20px;
+  right: 420px; /* Account for sidebar width */
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.3s ease-out;
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+.elementor-notification-success {
+  background: #00d084;
+  color: white;
+}
+
+.elementor-notification-error {
+  background: #e94b4b;
+  color: white;
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Focus and active states */
+.elementor-btn:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.elementor-view-btn:focus,
+.elementor-close-btn:focus,
+.elementor-clear-all-btn:focus,
+.elementor-highlight-btn:focus,
+.elementor-remove-btn:focus {
+  outline: 1px solid #4a90e2;
+  outline-offset: 1px;
+}
+
+/* Dark scrollbar for webkit browsers */
+.elementor-sidebar-content {
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2a2a2a;
+}
+
+/* Loading states */
+.elementor-btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.elementor-btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .elementor-notification {
+    right: 20px;
+    left: 20px;
+    max-width: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  #elementor-converter-sidebar {
+    border: 2px solid #ffffff;
+  }
+  
+  .elementor-btn-primary {
+    border: 1px solid #ffffff;
+  }
+  
+  .elementor-tag {
+    border: 1px solid #ffffff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  #elementor-converter-sidebar,
+  #elementor-hover-overlay,
+  #elementor-selection-overlay,
+  .elementor-selected-element-overlay,
+  #elementor-element-label,
+  .elementor-notification {
+    display: none !important;
+  }
+}

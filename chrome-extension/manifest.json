@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "HTML to Elementor Converter",
+  "version": "1.0.0",
+  "description": "Extract sections from any HTML website and convert them into Elementor-compatible layout data.",
+  
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "downloads"
+  ],
+  
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "lib/css-extractor.js",
+        "lib/elementor-mapper.js", 
+        "lib/export.js",
+        "content/selector.js",
+        "content/sidebar.js",
+        "content/content.js"
+      ],
+      "css": ["content/styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_title": "HTML to Elementor Converter",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png", 
+    "128": "icons/icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["content/styles.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
