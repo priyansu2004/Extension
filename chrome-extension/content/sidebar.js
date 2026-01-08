@@ -673,17 +673,75 @@ class ElementorSidebar {
   }
 
   /**
-   * Export as Elementor JSON
+   * Export as Elementor JSON (copy to clipboard)
    */
   async exportAsElementorJSON() {
-    const selectedElements = window.elementorSelector?.getSelectedElements() || [];
-    const result = await window.ExportManager.exportAsElementorJSON(selectedElements);
-    
-    if (result.success) {
-      window.ExportManager.showNotification('Elementor JSON exported successfully!', 'success');
-      console.log('Exported Elementor data:', result.data);
-    } else {
-      window.ExportManager.showNotification(`Export failed: ${result.error}`, 'error');
+    try {
+      console.log('Starting Elementor JSON export...');
+      
+      // Check dependencies
+      if (!window.elementorSelector) {
+        console.error('elementorSelector not found');
+        if (window.ExportManager?.showNotification) {
+          window.ExportManager.showNotification('Extension not properly initialized. Please refresh and try again.', 'error', 6000);
+        } else {
+          alert('Extension not properly initialized. Please refresh and try again.');
+        }
+        return;
+      }
+      
+      if (!window.ExportManager) {
+        console.error('ExportManager not found');
+        alert('Export manager not available');
+        return;
+      }
+      
+      if (!window.ElementorMapper) {
+        console.error('ElementorMapper not found');
+        if (window.ExportManager?.showNotification) {
+          window.ExportManager.showNotification('ElementorMapper not loaded. Please refresh the page.', 'error', 6000);
+        } else {
+          alert('ElementorMapper not loaded. Please refresh the page.');
+        }
+        return;
+      }
+      
+      const selectedElements = window.elementorSelector.getSelectedElements() || [];
+      console.log('Selected elements for export:', selectedElements.length);
+      
+      if (selectedElements.length === 0) {
+        console.log('No elements selected for export');
+        window.ExportManager.showNotification('Please select some elements first before exporting JSON.', 'error', 5000);
+        return;
+      }
+
+      // Export to Elementor format
+      const result = await window.ExportManager.exportAsElementorJSON(selectedElements);
+      console.log('Export result:', result);
+      
+      if (result.success) {
+        // Copy to clipboard
+        const copyResult = await window.ExportManager.copyToClipboard(result.json);
+        
+        if (copyResult.success) {
+          window.ExportManager.showNotification('Elementor JSON copied to clipboard! Paste it into Elementor.', 'success', 6000);
+          console.log('Exported Elementor data:', result.data);
+        } else {
+          // Fallback: show the JSON in console and notify user
+          console.log('Exported Elementor JSON:', result.json);
+          window.ExportManager.showNotification('Export successful but copy failed. Check console for JSON data.', 'error', 6000);
+        }
+      } else {
+        window.ExportManager.showNotification(`Export failed: ${result.error}`, 'error');
+        console.error('Export error:', result.error);
+      }
+    } catch (error) {
+      console.error('Export process error:', error);
+      if (window.ExportManager?.showNotification) {
+        window.ExportManager.showNotification('Export failed: ' + error.message, 'error');
+      } else {
+        alert('Export failed: ' + error.message);
+      }
     }
   }
 
@@ -691,18 +749,66 @@ class ElementorSidebar {
    * Copy JSON to clipboard
    */
   async copyJSONToClipboard() {
-    const selectedElements = window.elementorSelector?.getSelectedElements() || [];
-    const result = await window.ExportManager.exportAsElementorJSON(selectedElements);
-    
-    if (result.success) {
-      const copyResult = await window.ExportManager.copyToClipboard(result.json);
-      if (copyResult.success) {
-        window.ExportManager.showNotification('JSON copied to clipboard!', 'success');
-      } else {
-        window.ExportManager.showNotification(`Copy failed: ${copyResult.error}`, 'error');
+    try {
+      console.log('Starting JSON copy to clipboard...');
+      
+      // Check dependencies
+      if (!window.elementorSelector) {
+        console.error('elementorSelector not found');
+        if (window.ExportManager?.showNotification) {
+          window.ExportManager.showNotification('Extension not properly initialized. Please refresh and try again.', 'error', 6000);
+        } else {
+          alert('Extension not properly initialized. Please refresh and try again.');
+        }
+        return;
       }
-    } else {
-      window.ExportManager.showNotification(`Export failed: ${result.error}`, 'error');
+      
+      if (!window.ExportManager) {
+        console.error('ExportManager not found');
+        alert('Export manager not available');
+        return;
+      }
+      
+      if (!window.ElementorMapper) {
+        console.error('ElementorMapper not found');
+        if (window.ExportManager?.showNotification) {
+          window.ExportManager.showNotification('ElementorMapper not loaded. Please refresh the page.', 'error', 6000);
+        } else {
+          alert('ElementorMapper not loaded. Please refresh the page.');
+        }
+        return;
+      }
+      
+      const selectedElements = window.elementorSelector.getSelectedElements() || [];
+      console.log('Selected elements for copy:', selectedElements.length);
+      
+      if (selectedElements.length === 0) {
+        console.log('No elements selected for copy');
+        window.ExportManager.showNotification('Please select some elements first before copying JSON.', 'error', 5000);
+        return;
+      }
+      
+      const result = await window.ExportManager.exportAsElementorJSON(selectedElements);
+      console.log('Export result for clipboard:', result);
+      
+      if (result.success) {
+        const copyResult = await window.ExportManager.copyToClipboard(result.json);
+        if (copyResult.success) {
+          window.ExportManager.showNotification('JSON copied to clipboard successfully!', 'success', 4000);
+        } else {
+          console.log('Copy failed, showing JSON in console:', result.json);
+          window.ExportManager.showNotification(`Copy failed: ${copyResult.error}. Check console for JSON data.`, 'error', 6000);
+        }
+      } else {
+        window.ExportManager.showNotification(`Export failed: ${result.error}`, 'error');
+      }
+    } catch (error) {
+      console.error('Copy to clipboard error:', error);
+      if (window.ExportManager?.showNotification) {
+        window.ExportManager.showNotification('Copy failed: ' + error.message, 'error');
+      } else {
+        alert('Copy failed: ' + error.message);
+      }
     }
   }
 
@@ -713,10 +819,20 @@ class ElementorSidebar {
     try {
       console.log('Starting JSON download process...');
       
-      // Check dependencies
+      // Check dependencies with detailed logging
+      console.log('Checking dependencies...');
+      console.log('window.elementorSelector exists:', !!window.elementorSelector);
+      console.log('window.ExportManager exists:', !!window.ExportManager);
+      console.log('window.ElementorMapper exists:', !!window.ElementorMapper);
+      console.log('window.CSSExtractor exists:', !!window.CSSExtractor);
+      
       if (!window.elementorSelector) {
-        console.error('elementorSelector not found');
-        window.ExportManager?.showNotification('Extension not properly initialized', 'error');
+        console.error('elementorSelector not found - extension not properly initialized');
+        if (window.ExportManager?.showNotification) {
+          window.ExportManager.showNotification('Extension not properly initialized. Please refresh the page and try again.', 'error', 6000);
+        } else {
+          alert('Extension not properly initialized. Please refresh the page and try again.');
+        }
         return;
       }
       
@@ -726,12 +842,19 @@ class ElementorSidebar {
         return;
       }
       
+      if (!window.ElementorMapper) {
+        console.error('ElementorMapper not found');
+        window.ExportManager.showNotification('ElementorMapper not loaded. Please refresh the page.', 'error', 6000);
+        return;
+      }
+      
       const selectedElements = window.elementorSelector.getSelectedElements() || [];
       console.log('Selected elements for download:', selectedElements.length);
+      console.log('Selected elements:', selectedElements);
       
       if (selectedElements.length === 0) {
-        console.log('No elements selected');
-        window.ExportManager.showNotification('No elements selected for export', 'error');
+        console.log('No elements selected for export');
+        window.ExportManager.showNotification('Please select some elements first before downloading JSON.', 'error', 5000);
         return;
       }
 
@@ -750,6 +873,8 @@ class ElementorSidebar {
             message = downloadResult.message;
           } else if (downloadResult.method === 'chrome-api') {
             message = 'JSON file downloading via Chrome Downloads API...';
+          } else if (downloadResult.method === 'blob') {
+            message = 'JSON file downloaded via browser download...';
           }
           window.ExportManager.showNotification(message, 'success', downloadResult.method === 'clipboard' ? 8000 : 3000);
         } else {
@@ -760,7 +885,11 @@ class ElementorSidebar {
       }
     } catch (error) {
       console.error('Download error:', error);
-      window.ExportManager?.showNotification('Download failed: ' + error.message, 'error');
+      if (window.ExportManager?.showNotification) {
+        window.ExportManager.showNotification('Download failed: ' + error.message, 'error');
+      } else {
+        alert('Download failed: ' + error.message);
+      }
     }
   }
 

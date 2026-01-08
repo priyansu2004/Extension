@@ -267,7 +267,7 @@ class ElementSelector {
   }
 
   /**
-   * Select an element
+   * Select an element and capture all its children
    */
   selectElement(element, clearOthers = false) {
     console.log('Selecting element:', { tagName: element.tagName, clearOthers, currentCount: this.selectedElements.length });
@@ -282,8 +282,194 @@ class ElementSelector {
       return;
     }
     
+    // Check if this is a complex parent element that should capture children
+    const shouldCaptureChildren = this.shouldCaptureChildElements(element);
+    
+    if (shouldCaptureChildren) {
+      console.log('Capturing complex parent element with all children');
+      this.selectComplexElement(element);
+    } else {
+      // Standard single element selection
+      this.selectSingleElement(element);
+    }
+  }
+
+  /**
+   * Determine if element should capture all children
+   */
+  shouldCaptureChildElements(element) {
+    const classes = Array.from(element.classList);
+    const tagName = element.tagName.toLowerCase();
+    
+    // Check for Elementor containers
+    if (classes.some(cls => cls.includes('elementor-element') || cls.includes('elementor-container'))) {
+      return true;
+    }
+    
+    // Check for common parent containers
+    if (classes.some(cls => 
+        cls.includes('header') || 
+        cls.includes('nav') || 
+        cls.includes('menu') || 
+        cls.includes('container') ||
+        cls.includes('wrapper') ||
+        cls.includes('section')
+    )) {
+      return true;
+    }
+    
+    // Check if it has multiple different child element types
+    const childTypes = new Set();
+    Array.from(element.children).forEach(child => {
+      childTypes.add(child.tagName.toLowerCase());
+    });
+    
+    // If it has diverse child types and more than 2 children
+    return childTypes.size >= 2 && element.children.length >= 2;
+  }
+
+  /**
+   * Select complex element with all its children
+   */
+  selectComplexElement(parentElement) {
+    // Extract data for the parent element
+    const parentData = window.CSSExtractor ? window.CSSExtractor.extractElementData(parentElement) : {};
+    
+    // Create a structured selection that includes the parent and all meaningful children
+    const complexSelection = {
+      id: this.generateSelectionId(),
+      element: parentElement,
+      data: parentData,
+      children: this.extractChildElements(parentElement),
+      isComplex: true,
+      timestamp: Date.now()
+    };
+    
+    this.selectedElements.push(complexSelection);
+    this.addSelectionOverlay(parentElement);
+    this.notifySelectionChange();
+    
+    console.log('Complex element selected:', { 
+      tagName: parentElement.tagName, 
+      id: complexSelection.id,
+      childrenCount: complexSelection.children.length,
+      totalSelected: this.selectedElements.length 
+    });
+  }
+
+  /**
+   * Extract and analyze child elements
+   */
+  extractChildElements(parentElement) {
+    const children = [];
+    
+    // Recursively process all child elements
+    const processElement = (element, depth = 0) => {
+      if (depth > 5) return; // Prevent infinite recursion
+      
+      // Skip text nodes and comments
+      if (element.nodeType !== 1) return;
+      
+      // Skip elements that are too small or hidden
+      if (this.isElementTooSmall(element) || this.isElementHidden(element)) {
+        return;
+      }
+      
+      const elementData = window.CSSExtractor ? window.CSSExtractor.extractElementData(element) : {};
+      
+      const childInfo = {
+        element: element,
+        data: elementData,
+        tagName: element.tagName.toLowerCase(),
+        classes: Array.from(element.classList),
+        depth: depth,
+        hasChildren: element.children.length > 0,
+        textContent: element.textContent ? element.textContent.trim().substring(0, 100) : '',
+        elementType: this.detectElementType(element)
+      };
+      
+      children.push(childInfo);
+      
+      // Process grandchildren for important container elements
+      if (this.shouldProcessGrandchildren(element)) {
+        Array.from(element.children).forEach(child => {
+          processElement(child, depth + 1);
+        });
+      }
+    };
+    
+    // Process all direct children
+    Array.from(parentElement.children).forEach(child => {
+      processElement(child, 0);
+    });
+    
+    return children;
+  }
+
+  /**
+   * Detect the type of element for better widget mapping
+   */
+  detectElementType(element) {
+    const tagName = element.tagName.toLowerCase();
+    const classes = Array.from(element.classList);
+    const hasImage = element.querySelector('img') || tagName === 'img';
+    const hasIcon = element.querySelector('i, .icon, svg') || classes.some(cls => cls.includes('icon'));
+    const isButton = tagName === 'button' || tagName === 'a' && classes.some(cls => cls.includes('btn'));
+    const isNav = element.querySelector('nav, .menu, ul.nav') || classes.some(cls => cls.includes('nav') || cls.includes('menu'));
+    const isSocial = classes.some(cls => cls.includes('social')) || element.querySelector('a[href*="facebook"], a[href*="instagram"]');
+    
+    if (hasImage && !hasIcon) return 'logo';
+    if (isSocial) return 'social-icons';
+    if (isNav) return 'navigation';
+    if (isButton) return 'button';
+    if (hasIcon && element.textContent.trim()) return 'icon-box';
+    if (tagName.match(/h[1-6]/)) return 'heading';
+    if (tagName === 'p' || element.textContent.trim().length > 20) return 'text';
+    if (element.children.length > 1) return 'container';
+    
+    return 'generic';
+  }
+
+  /**
+   * Check if element is too small to be meaningful
+   */
+  isElementTooSmall(element) {
+    const rect = element.getBoundingClientRect();
+    return rect.width < 10 || rect.height < 10;
+  }
+
+  /**
+   * Check if element is hidden
+   */
+  isElementHidden(element) {
+    const style = window.getComputedStyle(element);
+    return style.display === 'none' || 
+           style.visibility === 'hidden' || 
+           style.opacity === '0' ||
+           element.hidden;
+  }
+
+  /**
+   * Determine if we should process grandchildren
+   */
+  shouldProcessGrandchildren(element) {
+    const classes = Array.from(element.classList);
+    
+    // Process grandchildren for navigation menus and complex containers
+    return classes.some(cls => 
+      cls.includes('menu') || 
+      cls.includes('nav') || 
+      cls.includes('container') ||
+      cls.includes('elementor-widget')
+    ) && element.children.length > 0;
+  }
+
+  /**
+   * Select single element (original logic)
+   */
+  selectSingleElement(element) {
     // Extract element data
-    const elementData = window.CSSExtractor.extractElementData(element);
+    const elementData = window.CSSExtractor ? window.CSSExtractor.extractElementData(element) : {};
     if (!elementData) {
       console.error('Failed to extract element data');
       return;
@@ -293,6 +479,7 @@ class ElementSelector {
       id: this.generateSelectionId(),
       element: element,
       data: elementData,
+      isComplex: false,
       timestamp: Date.now()
     };
     
@@ -300,7 +487,7 @@ class ElementSelector {
     this.addSelectionOverlay(element);
     this.notifySelectionChange();
     
-    console.log('Element selected successfully:', { 
+    console.log('Single element selected:', { 
       tagName: element.tagName, 
       id: selectionInfo.id, 
       totalSelected: this.selectedElements.length 

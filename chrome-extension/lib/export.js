@@ -27,7 +27,7 @@ class ExportManager {
         success: true,
         data: validatedData,
         json: jsonString,
-        filename: this.generateFilename('elementor')
+        filename: this.generateFilename('json')
       };
       
     } catch (error) {
@@ -208,11 +208,17 @@ ${htmlContent}
           const blob = new Blob([content], { type: mimeType });
           const url = URL.createObjectURL(blob);
           
+          // Ensure filename has correct extension for Chrome Downloads API
+          let downloadFilename = filename;
+          if (!downloadFilename.endsWith('.json') && mimeType === 'application/json') {
+            downloadFilename = filename.replace(/\.[^.]*$/, '') + '.json';
+          }
+          
           const response = await new Promise((resolve, reject) => {
             chrome.runtime.sendMessage({
               type: 'DOWNLOAD_FILE',
               url: url,
-              filename: filename
+              filename: downloadFilename
             }, (response) => {
               if (chrome.runtime.lastError) {
                 reject(new Error(chrome.runtime.lastError.message));
@@ -247,11 +253,17 @@ ${htmlContent}
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
+      
+      // Ensure filename has correct extension
+      if (!link.download.endsWith('.json') && mimeType === 'application/json') {
+        link.download = filename.replace(/\.[^.]*$/, '') + '.json';
+      }
+      
       link.style.cssText = 'display: none !important; position: absolute !important; left: -9999px !important;';
       
       // Add to body and force click
       document.body.appendChild(link);
-      console.log('Download link added to DOM');
+      console.log('Download link added to DOM, filename:', link.download);
       
       // Immediate click - don't use setTimeout
       link.click();
@@ -305,7 +317,11 @@ ${htmlContent}
     
     const hostname = window.location.hostname.replace(/[^a-z0-9]/gi, '_');
     
-    return `elementor_export_${hostname}_${timestamp}.${type}`;
+    // Ensure proper file extension
+    const extension = type === 'json' ? 'json' : type;
+    const prefix = type === 'json' ? 'elementor_export' : 'elementor_export';
+    
+    return `${prefix}_${hostname}_${timestamp}.${extension}`;
   }
 
   /**
@@ -431,6 +447,50 @@ ${htmlContent}
     countWidgets(elementorData.elements);
     
     return preview;
+  }
+
+  /**
+   * Copy text to clipboard
+   */
+  static async copyToClipboard(text) {
+    try {
+      console.log('Attempting to copy to clipboard...');
+      
+      // Method 1: Modern Clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        console.log('Clipboard API copy successful');
+        return { success: true, method: 'clipboard-api' };
+      }
+      
+      // Method 2: Legacy execCommand fallback
+      console.log('Falling back to execCommand method...');
+      
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.cssText = 'position: fixed; left: -9999px; top: -9999px; opacity: 0;';
+      
+      document.body.appendChild(textarea);
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      
+      if (successful) {
+        console.log('execCommand copy successful');
+        return { success: true, method: 'execCommand' };
+      } else {
+        throw new Error('execCommand copy failed');
+      }
+      
+    } catch (error) {
+      console.error('Copy to clipboard failed:', error);
+      return { 
+        success: false, 
+        error: error.message 
+      };
+    }
   }
 }
 

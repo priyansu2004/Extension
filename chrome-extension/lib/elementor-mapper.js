@@ -17,7 +17,6 @@ class ElementorMapper {
    */
   static getElementorWidgetType(element) {
     const tagName = element.tagName.toLowerCase();
-    const classes = Array.from(element.classList);
     
     // Widget type mapping
     const mapping = {
@@ -61,14 +60,18 @@ class ElementorMapper {
       return 'button';
     }
     
-    // Check for image containers
-    if (element.querySelector('img')) {
+    // Check if it has multiple children - prioritize container over single image
+    if (element.children.length > 1) {
+      return 'container';
+    }
+    
+    // Check for image containers (only if single child)
+    if (element.children.length === 1 && element.querySelector('img')) {
       return 'image';
     }
     
-    // Check if it's a flex/grid container with multiple children
-    if ((computedStyle.display === 'flex' || computedStyle.display === 'grid') && 
-        element.children.length > 1) {
+    // Check if it's a flex/grid container
+    if ((computedStyle.display === 'flex' || computedStyle.display === 'grid')) {
       return 'container';
     }
     
@@ -111,466 +114,523 @@ class ElementorMapper {
   }
 
   /**
-   * Convert HTML element to Elementor widget settings
-   */
-  static mapElementToSettings(element, elementData) {
-    const widgetType = this.getElementorWidgetType(element);
-    
-    switch (widgetType) {
-      case 'heading':
-        return this.mapHeadingSettings(element, elementData);
-      case 'text-editor':
-        return this.mapTextEditorSettings(element, elementData);
-      case 'image':
-        return this.mapImageSettings(element, elementData);
-      case 'button':
-        return this.mapButtonSettings(element, elementData);
-      case 'icon':
-        return this.mapIconSettings(element, elementData);
-      case 'video':
-        return this.mapVideoSettings(element, elementData);
-      case 'form':
-        return this.mapFormSettings(element, elementData);
-      case 'icon-list':
-        return this.mapListSettings(element, elementData);
-      case 'container':
-        return this.mapContainerSettings(element, elementData);
-      default:
-        return this.mapHtmlSettings(element, elementData);
-    }
-  }
-
-  /**
-   * Map heading element settings
-   */
-  static mapHeadingSettings(element, data) {
-    const tagName = element.tagName.toLowerCase();
-    
-    return {
-      title: element.textContent.trim(),
-      header_size: tagName,
-      color: data.typography.color,
-      typography_typography: 'custom',
-      typography_font_family: data.typography.fontFamily,
-      typography_font_size: data.typography.fontSize,
-      typography_font_weight: data.typography.fontWeight,
-      typography_line_height: data.typography.lineHeight,
-      typography_letter_spacing: data.typography.letterSpacing,
-      align: data.typography.textAlign,
-      text_shadow_text_shadow_type: '',
-      ...this.mapSpacing(data.spacing),
-      ...this.mapBackground(data.background),
-      ...this.mapBorder(data.border)
-    };
-  }
-
-  /**
-   * Map text editor settings
-   */
-  static mapTextEditorSettings(element, data) {
-    return {
-      editor: element.innerHTML,
-      color: data.typography.color,
-      typography_typography: 'custom',
-      typography_font_family: data.typography.fontFamily,
-      typography_font_size: data.typography.fontSize,
-      typography_font_weight: data.typography.fontWeight,
-      typography_line_height: data.typography.lineHeight,
-      align: data.typography.textAlign,
-      ...this.mapSpacing(data.spacing),
-      ...this.mapBackground(data.background),
-      ...this.mapBorder(data.border)
-    };
-  }
-
-  /**
-   * Map image settings
-   */
-  static mapImageSettings(element, data) {
-    const img = element.tagName === 'IMG' ? element : element.querySelector('img');
-    
-    return {
-      image: img ? { url: img.src, id: '' } : { url: '', id: '' },
-      image_size: 'full',
-      alt: img ? img.alt : '',
-      caption: '',
-      link_to: 'none',
-      width: data.layout.width,
-      height: data.layout.height,
-      object_fit: window.getComputedStyle(img || element).objectFit || 'cover',
-      ...this.mapSpacing(data.spacing),
-      ...this.mapBorder(data.border)
-    };
-  }
-
-  /**
-   * Map button settings
-   */
-  static mapButtonSettings(element, data) {
-    const link = element.href || '#';
-    
-    return {
-      text: element.textContent.trim(),
-      link: { url: link, is_external: false, nofollow: false },
-      size: 'md',
-      typography_typography: 'custom',
-      typography_font_family: data.typography.fontFamily,
-      typography_font_size: data.typography.fontSize,
-      typography_font_weight: data.typography.fontWeight,
-      button_text_color: data.typography.color,
-      background_color: data.background.backgroundColor,
-      border_border: data.border.borderStyle.top !== 'none' ? 'solid' : '',
-      border_width: data.border.borderWidth,
-      border_color: data.border.borderColor.top,
-      border_radius: data.border.borderRadius,
-      button_box_shadow_box_shadow_type: '',
-      ...this.mapSpacing(data.spacing)
-    };
-  }
-
-  /**
-   * Map icon settings
-   */
-  static mapIconSettings(element, data) {
-    const classes = Array.from(element.classList);
-    let iconName = 'fas fa-star'; // default icon
-    
-    // Try to extract Font Awesome icon
-    const faClass = classes.find(cls => cls.includes('fa-'));
-    if (faClass) {
-      const prefix = classes.find(cls => cls.includes('fa') && !cls.includes('fa-')) || 'fas';
-      iconName = `${prefix} ${faClass}`;
-    }
-    
-    return {
-      selected_icon: { value: iconName, library: 'fa-solid' },
-      icon_color: data.typography.color,
-      size: data.typography.fontSize,
-      rotate: 0,
-      border_border: data.border.borderStyle.top !== 'none' ? 'solid' : '',
-      border_width: data.border.borderWidth,
-      border_color: data.border.borderColor.top,
-      border_radius: data.border.borderRadius,
-      ...this.mapSpacing(data.spacing),
-      ...this.mapBackground(data.background)
-    };
-  }
-
-  /**
-   * Map video settings
-   */
-  static mapVideoSettings(element, data) {
-    const src = element.src || element.querySelector('source')?.src || '';
-    
-    return {
-      video_type: 'hosted',
-      hosted_url: { url: src },
-      aspect_ratio: '169',
-      autoplay: element.autoplay || false,
-      mute: element.muted || false,
-      loop: element.loop || false,
-      controls: element.controls !== false,
-      ...this.mapSpacing(data.spacing)
-    };
-  }
-
-  /**
-   * Map form settings
-   */
-  static mapFormSettings(element, data) {
-    return {
-      form_name: 'Contact Form',
-      form_fields: this.extractFormFields(element),
-      button_text: 'Send',
-      ...this.mapSpacing(data.spacing),
-      ...this.mapBackground(data.background)
-    };
-  }
-
-  /**
-   * Extract form fields from form element
-   */
-  static extractFormFields(formElement) {
-    const fields = [];
-    const inputs = formElement.querySelectorAll('input, textarea, select');
-    
-    inputs.forEach((input, index) => {
-      fields.push({
-        custom_id: `field_${index}`,
-        field_type: this.getFieldType(input),
-        field_label: input.placeholder || input.name || `Field ${index + 1}`,
-        required: input.required || false,
-        placeholder: input.placeholder || '',
-        width: '100'
-      });
-    });
-    
-    return fields;
-  }
-
-  /**
-   * Get form field type
-   */
-  static getFieldType(input) {
-    const tagName = input.tagName.toLowerCase();
-    const type = input.type;
-    
-    if (tagName === 'textarea') return 'textarea';
-    if (tagName === 'select') return 'select';
-    
-    switch (type) {
-      case 'email': return 'email';
-      case 'tel': return 'tel';
-      case 'url': return 'url';
-      case 'number': return 'number';
-      case 'date': return 'date';
-      default: return 'text';
-    }
-  }
-
-  /**
-   * Map list settings
-   */
-  static mapListSettings(element, data) {
-    const items = [];
-    const listItems = element.querySelectorAll('li');
-    
-    listItems.forEach((li, index) => {
-      items.push({
-        text: li.textContent.trim(),
-        selected_icon: { value: 'fas fa-check', library: 'fa-solid' },
-        link: { url: '', is_external: false }
-      });
-    });
-    
-    return {
-      icon_list: items,
-      view: 'traditional',
-      layout: 'vertical',
-      ...this.mapSpacing(data.spacing),
-      ...this.mapBackground(data.background)
-    };
-  }
-
-  /**
-   * Map container settings
-   */
-  static mapContainerSettings(element, data) {
-    return {
-      content_width: 'boxed',
-      height: data.layout.height.size > 0 ? 'min-height' : 'default',
-      min_height: data.layout.height,
-      flex_direction: data.flexbox.flexDirection || 'row',
-      flex_wrap: data.flexbox.flexWrap || 'nowrap',
-      justify_content: data.flexbox.justifyContent || 'flex-start',
-      align_items: data.flexbox.alignItems || 'stretch',
-      gap: data.flexbox.gap || { size: 10, unit: 'px' },
-      ...this.mapSpacing(data.spacing),
-      ...this.mapBackground(data.background),
-      ...this.mapBorder(data.border)
-    };
-  }
-
-  /**
-   * Map HTML widget settings (fallback)
-   */
-  static mapHtmlSettings(element, data) {
-    return {
-      html: element.outerHTML,
-      ...this.mapSpacing(data.spacing)
-    };
-  }
-
-  /**
-   * Map spacing data to Elementor format
-   */
-  static mapSpacing(spacing) {
-    return {
-      margin: {
-        top: spacing.margin.top.size,
-        right: spacing.margin.right.size,
-        bottom: spacing.margin.bottom.size,
-        left: spacing.margin.left.size,
-        unit: spacing.margin.top.unit
-      },
-      padding: {
-        top: spacing.padding.top.size,
-        right: spacing.padding.right.size,
-        bottom: spacing.padding.bottom.size,
-        left: spacing.padding.left.size,
-        unit: spacing.padding.top.unit
-      }
-    };
-  }
-
-  /**
-   * Map background data to Elementor format
-   */
-  static mapBackground(background) {
-    const settings = {};
-    
-    if (background.backgroundColor !== '#000000') {
-      settings.background_background = 'classic';
-      settings.background_color = background.backgroundColor;
-    }
-    
-    if (background.backgroundImage && background.backgroundImage !== 'none') {
-      settings.background_background = 'classic';
-      settings.background_image = { url: background.backgroundImage.replace(/url\(["']?|["']?\)/g, '') };
-      settings.background_size = background.backgroundSize;
-      settings.background_position = background.backgroundPosition;
-      settings.background_repeat = background.backgroundRepeat;
-    }
-    
-    return settings;
-  }
-
-  /**
-   * Map border data to Elementor format
-   */
-  static mapBorder(border) {
-    const settings = {};
-    
-    // Check if any border exists
-    const hasBorder = border.borderWidth.top.size > 0 || 
-                     border.borderWidth.right.size > 0 ||
-                     border.borderWidth.bottom.size > 0 ||
-                     border.borderWidth.left.size > 0;
-    
-    if (hasBorder) {
-      settings.border_border = border.borderStyle.top;
-      settings.border_width = {
-        top: border.borderWidth.top.size,
-        right: border.borderWidth.right.size,
-        bottom: border.borderWidth.bottom.size,
-        left: border.borderWidth.left.size,
-        unit: border.borderWidth.top.unit
-      };
-      settings.border_color = border.borderColor.top;
-    }
-    
-    // Border radius
-    const hasRadius = border.borderRadius.topLeft.size > 0 ||
-                     border.borderRadius.topRight.size > 0 ||
-                     border.borderRadius.bottomRight.size > 0 ||
-                     border.borderRadius.bottomLeft.size > 0;
-    
-    if (hasRadius) {
-      settings.border_radius = {
-        top: border.borderRadius.topLeft.size,
-        right: border.borderRadius.topRight.size,
-        bottom: border.borderRadius.bottomRight.size,
-        left: border.borderRadius.bottomLeft.size,
-        unit: border.borderRadius.topLeft.unit
-      };
-    }
-    
-    return settings;
-  }
-
-  /**
    * Convert single element to Elementor format
    */
   static convertElement(element, elementData) {
-    const widgetType = this.getElementorWidgetType(element);
-    const settings = this.mapElementToSettings(element, elementData);
-    
-    const elementorElement = {
+    try {
+      const widgetType = this.getElementorWidgetType(element);
+      
+      // Special handling for complex HTML structures
+      if (widgetType === 'container' && this.isComplexElement(element)) {
+        return this.parseComplexElement(element, elementData);
+      }
+      
+      const settings = this.mapElementToSettings(element, elementData);
+      const isContainer = widgetType === 'container';
+      
+      const elementorElement = {
+        id: this.generateId(),
+        elType: isContainer ? 'container' : 'widget',
+        settings: settings || {},
+        elements: [],
+        isInner: isContainer && element.children.length > 0
+      };
+
+      if (elementorElement.elType === 'widget') {
+        elementorElement.widgetType = widgetType;
+      }
+
+      // Add child elements for containers
+      if (isContainer && element.children.length > 0) {
+        Array.from(element.children).forEach(child => {
+          try {
+            const childData = window.CSSExtractor ? window.CSSExtractor.extractElementData(child) : {};
+            if (child.nodeType === 1) { // Element node
+              const childElement = this.convertElement(child, childData);
+              if (childElement) {
+                elementorElement.elements.push(childElement);
+              }
+            }
+          } catch (error) {
+            console.warn('Failed to convert child element:', error);
+          }
+        });
+      }
+
+      return elementorElement;
+    } catch (error) {
+      console.error('Error converting element:', error);
+      return this.createFallbackElement(element);
+    }
+  }
+
+  /**
+   * Create fallback element when conversion fails
+   */
+  static createFallbackElement(element) {
+    return {
       id: this.generateId(),
-      elType: widgetType === 'container' ? 'container' : 'widget',
-      settings: settings
+      elType: 'widget',
+      widgetType: 'text-editor',
+      settings: {
+        editor: element.textContent || 'Content',
+        _title: 'Fallback Element'
+      },
+      elements: [],
+      isInner: false
+    };
+  }
+
+  /**
+   * Check if element is a complex structure that needs special parsing
+   */
+  static isComplexElement(element) {
+    // Check if element has multiple different types of children
+    const childTypes = new Set();
+    Array.from(element.children).forEach(child => {
+      childTypes.add(child.tagName.toLowerCase());
+    });
+    
+    // If it has diverse child types and more than 2 children, treat as complex
+    return childTypes.size >= 2 && element.children.length >= 2;
+  }
+
+  /**
+   * Parse complex HTML elements into individual Elementor widgets
+   */
+  static parseComplexElement(element, elementData) {
+    const container = {
+      id: this.generateId(),
+      elType: 'container',
+      settings: {
+        flex_direction: 'row',
+        flex_justify_content: 'space-between',
+        flex_align_items: 'center',
+        flex_wrap: 'wrap',
+        content_width: 'full',
+        background_background: 'classic',
+        _title: 'Complex Container'
+      },
+      elements: [],
+      isInner: false
     };
 
-    if (elementorElement.elType === 'widget') {
-      elementorElement.widgetType = widgetType;
-    }
-
-    // Add child elements for containers
-    if (widgetType === 'container' && element.children.length > 0) {
-      elementorElement.elements = [];
-      
-      Array.from(element.children).forEach(child => {
-        try {
-          const childData = window.CSSExtractor.extractElementData(child);
-          if (childData) {
-            const childElement = this.convertElement(child, childData);
-            elementorElement.elements.push(childElement);
-          }
-        } catch (error) {
-          console.warn('Failed to convert child element:', error);
+    // Parse each child element individually
+    Array.from(element.children).forEach(child => {
+      try {
+        const widget = this.parseElementToWidget(child);
+        if (widget) {
+          container.elements.push(widget);
         }
-      });
-    }
+      } catch (error) {
+        console.warn('Failed to parse child element:', error);
+      }
+    });
 
-    return elementorElement;
+    return container;
+  }
+
+  /**
+   * Parse individual HTML elements into specific Elementor widgets
+   */
+  static parseElementToWidget(element) {
+    try {
+      const tagName = element.tagName.toLowerCase();
+      const classes = Array.from(element.classList);
+      
+      // Logo/Image
+      if (element.querySelector('img')) {
+        const img = element.querySelector('img');
+        return {
+          id: this.generateId(),
+          elType: 'widget',
+          widgetType: 'image',
+          settings: {
+            image: {
+              url: img.src,
+              id: Math.floor(Math.random() * 100) + 30
+            },
+            image_size: 'full',
+            align: 'left',
+            _title: `Logo - ${img.alt || 'Image'}`
+          },
+          elements: [],
+          isInner: false
+        };
+      }
+
+      // Buttons
+      if (tagName === 'button' || (tagName === 'a' && classes.some(cls => cls.includes('btn') || cls.includes('button')))) {
+        return {
+          id: this.generateId(),
+          elType: 'widget',
+          widgetType: 'button',
+          settings: {
+            text: element.textContent.trim(),
+            link: element.href ? { url: element.href, is_external: element.href.startsWith('http') } : undefined,
+            align: 'right',
+            background_color: '#ff6900',
+            button_text_color: '#ffffff',
+            _title: `Button - ${element.textContent.trim()}`
+          },
+          elements: [],
+          isInner: false
+        };
+      }
+
+      // Navigation Menu
+      if (element.querySelector('nav, .menu, ul.nav, .navbar')) {
+        const menuItems = element.querySelectorAll('a[href]');
+        const menuList = [];
+        
+        menuItems.forEach(item => {
+          menuList.push({
+            item_text: item.textContent.trim(),
+            item_url: { url: item.href, is_external: false }
+          });
+        });
+
+        return {
+          id: this.generateId(),
+          elType: 'widget',
+          widgetType: 'nav-menu',
+          settings: {
+            menu: menuList,
+            layout: 'horizontal',
+            align: 'center',
+            _title: 'Navigation Menu'
+          },
+          elements: [],
+          isInner: false
+        };
+      }
+
+      // Social Icons
+      if (classes.some(cls => cls.includes('social')) || element.querySelector('a[href*="facebook"], a[href*="instagram"]')) {
+        const socialLinks = element.querySelectorAll('a[href*="facebook"], a[href*="instagram"], a[href*="twitter"], a[href*="linkedin"]');
+        const socialIcons = [];
+        
+        socialLinks.forEach(link => {
+          let social = 'facebook';
+          if (link.href.includes('instagram')) social = 'instagram';
+          else if (link.href.includes('twitter')) social = 'twitter';
+          else if (link.href.includes('linkedin')) social = 'linkedin';
+          
+          socialIcons.push({
+            social: social,
+            link: { url: link.href, is_external: true }
+          });
+        });
+
+        return {
+          id: this.generateId(),
+          elType: 'widget',
+          widgetType: 'social-icons',
+          settings: {
+            social_icon_list: socialIcons,
+            shape: 'square',
+            align: 'right',
+            _title: 'Social Icons'
+          },
+          elements: [],
+          isInner: false
+        };
+      }
+
+      // Contact Information (Icon Box)
+      if (element.querySelector('i[class*="phone"], i[class*="email"], .icon-phone, .icon-email') || 
+          element.textContent.includes('phone') || element.textContent.includes('email') ||
+          element.textContent.includes('Contact')) {
+        const title = element.querySelector('h1, h2, h3, h4, h5, h6')?.textContent?.trim() || 
+                     element.textContent.split('\n')[0].trim() || 'Contact';
+        const description = element.textContent.split('\n').slice(1).join(' ').trim() || '';
+        const link = element.querySelector('a')?.href || '';
+        
+        let iconClass = 'fas fa-phone';
+        if (element.innerHTML.includes('email') || element.innerHTML.includes('mail')) {
+          iconClass = 'fas fa-envelope';
+        }
+
+        return {
+          id: this.generateId(),
+          elType: 'widget',
+          widgetType: 'icon-box',
+          settings: {
+            selected_icon: { value: iconClass, library: 'fa-solid' },
+            title_text: title,
+            description_text: description,
+            link: link ? { url: link, is_external: false } : undefined,
+            position: 'left',
+            _title: `Icon Box - ${title}`
+          },
+          elements: [],
+          isInner: false
+        };
+      }
+
+      // Headings
+      if (tagName.match(/h[1-6]/)) {
+        return {
+          id: this.generateId(),
+          elType: 'widget',
+          widgetType: 'heading',
+          settings: {
+            title: element.textContent.trim(),
+            size: tagName,
+            header_size: tagName,
+            align: 'left',
+            _title: `Heading - ${element.textContent.trim().substring(0, 20)}`
+          },
+          elements: [],
+          isInner: false
+        };
+      }
+
+      // Default text widget for any remaining elements with text content
+      if (element.textContent.trim()) {
+        return {
+          id: this.generateId(),
+          elType: 'widget',
+          widgetType: 'text-editor',
+          settings: {
+            editor: element.innerHTML || element.textContent,
+            align: 'left',
+            _title: `Text - ${element.textContent.trim().substring(0, 20)}`
+          },
+          elements: [],
+          isInner: false
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.warn('Error parsing element to widget:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Convert HTML element to Elementor widget settings
+   */
+  static mapElementToSettings(element, elementData) {
+    try {
+      const widgetType = this.getElementorWidgetType(element);
+      
+      switch (widgetType) {
+        case 'heading':
+          return {
+            title: element.textContent.trim(),
+            size: element.tagName.toLowerCase(),
+            align: 'left',
+            _title: `Heading - ${element.textContent.trim().substring(0, 20)}`
+          };
+          
+        case 'text-editor':
+          return {
+            editor: element.innerHTML || element.textContent,
+            align: 'left',
+            _title: `Text - ${element.textContent.trim().substring(0, 20)}`
+          };
+          
+        case 'image':
+          const img = element.tagName === 'IMG' ? element : element.querySelector('img');
+          return {
+            image: img ? { url: img.src, id: Math.floor(Math.random() * 100) + 30 } : { url: '', id: '' },
+            image_size: 'full',
+            _title: `Image - ${img?.alt || 'Image'}`
+          };
+          
+        case 'button':
+          return {
+            text: element.textContent.trim(),
+            link: element.href ? { url: element.href, is_external: false } : undefined,
+            align: 'center',
+            _title: `Button - ${element.textContent.trim()}`
+          };
+          
+        case 'container':
+          return {
+            content_width: "full",
+            flex_direction: "row",
+            flex_justify_content: "space-between",
+            flex_align_items: "center",
+            background_background: "classic",
+            _title: `Container - ${element.className ? element.className.split(' ')[0] : 'Wrapper'}`
+          };
+          
+        default:
+          return {
+            html: element.innerHTML || element.textContent,
+            _title: `HTML - ${element.tagName.toLowerCase()}`
+          };
+      }
+    } catch (error) {
+      console.warn('Error mapping element settings:', error);
+      return {
+        html: element.textContent || 'Error',
+        _title: 'Error Element'
+      };
+    }
   }
 
   /**
    * Convert array of selected elements to full Elementor JSON
    */
   static convertToElementor(selectedElements) {
-    const elementorData = {
-      version: "1.0",
-      title: `Converted from ${window.location.hostname}`,
-      type: "page",
-      created: new Date().toISOString(),
-      source_url: window.location.href,
-      elements: []
-    };
+    try {
+      const elementorData = {
+        content: [],
+        page_settings: [],
+        version: "0.4",
+        title: `Converted from ${window.location.hostname}`,
+        type: "container"
+      };
 
-    selectedElements.forEach((elementInfo, index) => {
-      try {
-        const elementorElement = this.convertElement(elementInfo.element, elementInfo.data);
-        elementorElement.settings._element_id = `element_${index}`;
-        elementorData.elements.push(elementorElement);
-      } catch (error) {
-        console.error('Failed to convert element:', error);
-      }
-    });
+      // Create main container to wrap all elements
+      const mainContainer = {
+        id: this.generateId(),
+        settings: {
+          flex_direction: "column",
+          boxed_width: {
+            unit: "px",
+            size: 1200,
+            sizes: []
+          },
+          flex_align_items: "stretch",
+          flex_gap: {
+            column: "20",
+            row: "20",
+            isLinked: true,
+            unit: "px",
+            size: 20
+          },
+          flex_wrap: "nowrap",
+          background_background: "classic",
+          padding: {
+            unit: "px",
+            top: "20",
+            right: "20",
+            bottom: "20",
+            left: "20",
+            isLinked: false
+          },
+          _title: "Converted Content"
+        },
+        elements: [],
+        isInner: false,
+        elType: "container"
+      };
 
-    return elementorData;
+      selectedElements.forEach((selectionInfo, index) => {
+        try {
+          let elementorElement;
+          
+          // Handle complex elements with children
+          if (selectionInfo.isComplex && selectionInfo.children) {
+            elementorElement = this.convertComplexSelection(selectionInfo);
+          } else {
+            // Handle single elements
+            elementorElement = this.convertElement(selectionInfo.element, selectionInfo.data);
+          }
+          
+          if (elementorElement) {
+            mainContainer.elements.push(elementorElement);
+          }
+        } catch (error) {
+          console.error('Failed to convert element:', error);
+          // Add fallback element
+          mainContainer.elements.push(this.createFallbackElement(selectionInfo.element));
+        }
+      });
+
+      elementorData.content.push(mainContainer);
+      return this.validateElementorData(elementorData);
+    } catch (error) {
+      console.error('Error in convertToElementor:', error);
+      throw new Error('Failed to convert elements to Elementor format: ' + error.message);
+    }
   }
 
   /**
-   * Create section wrapper for multiple elements
+   * Convert complex selection with all its children
    */
-  static wrapInSection(elements) {
-    return {
-      id: this.generateId(),
-      elType: 'section',
-      settings: {
-        layout: 'boxed',
-        content_width: 'boxed',
-        gap: 'default'
-      },
-      elements: [{
+  static convertComplexSelection(selectionInfo) {
+    try {
+      const parentElement = selectionInfo.element;
+      
+      // Create main container for the complex element
+      const container = {
         id: this.generateId(),
-        elType: 'column',
+        elType: 'container',
         settings: {
-          _column_size: 100,
-          _inline_size: null
+          flex_direction: 'row',
+          flex_justify_content: 'space-between',
+          flex_align_items: 'center',
+          flex_wrap: 'wrap',
+          content_width: 'full',
+          background_background: 'classic',
+          _title: `${parentElement.tagName} Container`
         },
-        elements: elements
-      }]
-    };
+        elements: [],
+        isInner: false
+      };
+
+      // Process children
+      if (selectionInfo.children && selectionInfo.children.length > 0) {
+        selectionInfo.children.forEach(childInfo => {
+          try {
+            const widget = this.parseElementToWidget(childInfo.element);
+            if (widget) {
+              container.elements.push(widget);
+            }
+          } catch (error) {
+            console.warn('Failed to convert complex child:', error);
+          }
+        });
+      }
+
+      return container;
+    } catch (error) {
+      console.error('Error converting complex selection:', error);
+      return this.createFallbackElement(selectionInfo.element);
+    }
   }
 
   /**
    * Validate and clean Elementor JSON
    */
   static validateElementorData(data) {
-    // Basic validation
-    if (!data.elements || !Array.isArray(data.elements)) {
-      throw new Error('Invalid Elementor data: elements array missing');
-    }
+    try {
+      // Basic validation for new Elementor format
+      if (!data.content || !Array.isArray(data.content)) {
+        throw new Error('Invalid Elementor data: content array missing');
+      }
 
-    // Clean up any invalid values
-    const cleanData = JSON.parse(JSON.stringify(data));
-    
-    // Remove any undefined or null values
-    this.removeInvalidValues(cleanData);
-    
-    return cleanData;
+      // Validate required fields
+      if (!data.version) {
+        data.version = "0.4";
+      }
+      if (!data.type) {
+        data.type = "container";
+      }
+      if (!data.title) {
+        data.title = "Converted Content";
+      }
+      if (!data.page_settings) {
+        data.page_settings = [];
+      }
+
+      // Clean up any invalid values
+      const cleanData = JSON.parse(JSON.stringify(data));
+      
+      // Remove any undefined or null values
+      this.removeInvalidValues(cleanData);
+      
+      return cleanData;
+    } catch (error) {
+      console.error('Error validating Elementor data:', error);
+      throw new Error('Failed to validate Elementor data: ' + error.message);
+    }
   }
 
   /**
@@ -593,3 +653,6 @@ class ElementorMapper {
 
 // Make ElementorMapper available globally
 window.ElementorMapper = ElementorMapper;
+
+// Log successful loading
+console.log('ElementorMapper loaded successfully');
