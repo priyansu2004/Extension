@@ -186,17 +186,18 @@ class ElementorSidebar {
       right: 0;
       width: ${this.width}px;
       height: 100vh;
-      background: #1E1E1E;
-      color: #FFFFFF;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+      color: #2c3e50;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 14px;
       z-index: 999999;
-      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1), -2px 0 10px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       transform: translateX(100%);
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-left: 3px solid #3498db;
     `;
   }
 
@@ -549,7 +550,7 @@ class ElementorSidebar {
           <label>Background</label>
           <div class="elementor-background-info">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <div class="elementor-color-preview" style="background: ${data.background.backgroundColor}; width: 20px; height: 20px; border: 1px solid #444; border-radius: 3px;"></div>
+              <div class="elementor-color-preview" style="background: ${data.background.backgroundColor}; width: 24px; height: 24px; border: 2px solid #e2e8f0; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"></div>
               <span>${data.background.backgroundColor}</span>
             </div>
           </div>

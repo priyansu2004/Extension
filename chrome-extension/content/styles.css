@@ -14,8 +14,8 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  color: #ffffff;
-  background: #1e1e1e;
+  color: #2c3e50;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
 }
 
 /* Sidebar Header */
@@ -23,9 +23,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
-  background: #2a2a2a;
-  border-bottom: 1px solid #404040;
+  padding: 20px 16px;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  border-bottom: none;
+  box-shadow: 0 2px 10px rgba(52, 152, 219, 0.2);
   flex-shrink: 0;
 }
 
@@ -45,6 +46,7 @@
   font-weight: 600;
   color: #ffffff;
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .elementor-sidebar-controls {
@@ -56,9 +58,10 @@
 /* View Mode Buttons */
 .elementor-view-modes {
   display: flex;
-  background: #404040;
-  border-radius: 6px;
-  padding: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 3px;
+  backdrop-filter: blur(10px);
 }
 
 .elementor-view-btn {
@@ -69,20 +72,22 @@
   height: 28px;
   border: none;
   background: transparent;
-  color: #a0a0a0;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.2s ease;
 }
 
 .elementor-view-btn:hover {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .elementor-view-btn.active {
-  color: #4a90e2;
-  background: #1e1e1e;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 /* Close Button */
@@ -93,16 +98,17 @@
   width: 32px;
   height: 32px;
   border: none;
-  background: transparent;
-  color: #a0a0a0;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .elementor-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  background: #e94b4b;
+  transform: scale(1.05);
 }
 
 /* Sidebar Content */
@@ -113,50 +119,65 @@
 }
 
 .elementor-sidebar-content::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .elementor-sidebar-content::-webkit-scrollbar-track {
-  background: #2a2a2a;
+  background: #f1f3f4;
+  border-radius: 4px;
 }
 
 .elementor-sidebar-content::-webkit-scrollbar-thumb {
-  background: #4a4a4a;
-  border-radius: 3px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .elementor-sidebar-content::-webkit-scrollbar-thumb:hover {
-  background: #5a5a5a;
+  background: linear-gradient(135deg, #2980b9, #1f5f8b);
 }
 
 /* Panel Styling */
 .elementor-panel {
-  border-bottom: 1px solid #404040;
+  margin: 8px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
+  border: 1px solid #e1e5e9;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.elementor-panel:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .elementor-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
-  background: #2a2a2a;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #e1e5e9;
 }
 
 .elementor-panel-header:hover {
-  background: #333333;
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
 }
 
 .elementor-panel-header h4 {
   font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
+  color: #2c3e50;
   margin: 0;
 }
 
 .elementor-panel-content {
-  padding: 16px;
+  padding: 20px;
+  background: #ffffff;
 }
 
 /* Clear All Button */
@@ -164,26 +185,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: none;
-  background: transparent;
-  color: #a0a0a0;
+  background: #fff5f5;
+  color: #e53e3e;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
   transition: all 0.2s ease;
+  border: 1px solid #fed7d7;
 }
 
 .elementor-clear-all-btn:hover {
+  background: #e53e3e;
   color: #ffffff;
-  background: #e94b4b;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
 }
 
 /* Selection Info Styles */
 .elementor-no-selection {
   text-align: center;
-  padding: 24px 16px;
-  color: #a0a0a0;
+  padding: 32px 20px;
+  color: #718096;
+  background: #f7fafc;
+  margin: 8px;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e0;
 }
 
 .elementor-empty-icon {
@@ -210,35 +238,38 @@
 
 .elementor-info-group label {
   font-size: 12px;
-  font-weight: 600;
-  color: #4a90e2;
+  font-weight: 700;
+  color: #3498db;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  margin-bottom: 2px;
 }
 
 .elementor-tag {
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
-  background: #4a90e2;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
-  border-radius: 4px;
-  font-size: 12px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   width: fit-content;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
 }
 
 .elementor-text-content {
-  padding: 8px 12px;
-  background: #2a2a2a;
-  border-radius: 6px;
-  border-left: 3px solid #4a90e2;
-  font-family: 'Courier New', monospace;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
   font-size: 13px;
-  color: #e0e0e0;
+  color: #2c3e50;
   word-break: break-word;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .elementor-typography-info,
@@ -246,17 +277,22 @@
 .elementor-background-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   font-size: 13px;
-  color: #e0e0e0;
+  color: #4a5568;
+  background: #f7fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
 }
 
 .elementor-color-preview {
-  width: 20px;
-  height: 20px;
-  border: 1px solid #444;
-  border-radius: 3px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
   flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .elementor-attributes {
@@ -288,8 +324,12 @@
 /* Elements List Styles */
 .elementor-no-elements {
   text-align: center;
-  padding: 24px 16px;
-  color: #a0a0a0;
+  padding: 32px 20px;
+  color: #718096;
+  background: #f7fafc;
+  margin: 8px;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e0;
 }
 
 .elementor-no-elements p {
@@ -301,20 +341,24 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #333333;
-  transition: background 0.2s ease;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .elementor-element-item:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .elementor-element-item:hover {
-  background: #2a2a2a;
-  border-radius: 6px;
-  margin: 0 -12px;
-  padding: 12px;
+  background: #f7fafc;
+  border-color: #3498db;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
 }
 
 .elementor-element-info-brief {
@@ -326,18 +370,23 @@
 
 .elementor-element-tag {
   font-size: 11px;
-  font-weight: 600;
-  color: #4a90e2;
+  font-weight: 700;
+  color: #3498db;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  background: #ebf8ff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
 }
 
 .elementor-element-text {
   font-size: 13px;
-  color: #e0e0e0;
+  color: #4a5568;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-top: 4px;
 }
 
 .elementor-element-actions {
@@ -356,101 +405,117 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: none;
-  background: transparent;
-  color: #a0a0a0;
+  background: #f7fafc;
+  color: #4a5568;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
   transition: all 0.2s ease;
+  border: 1px solid #e2e8f0;
 }
 
 .elementor-highlight-btn:hover {
   color: #ffffff;
-  background: #4a90e2;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
 .elementor-remove-btn:hover {
   color: #ffffff;
-  background: #e94b4b;
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
 }
 
 /* Export Section Styles */
 .elementor-export-buttons {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0 4px;
 }
 
 .elementor-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 14px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   text-decoration: none;
   outline: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .elementor-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .elementor-btn-primary {
-  background: #00d084;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 .elementor-btn-primary:hover:not(:disabled) {
-  background: #00b574;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 208, 132, 0.3);
+  background: linear-gradient(135deg, #5a67d8 0%, #553c9a 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
 }
 
 .elementor-btn-secondary {
-  background: #4a4a4a;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   color: white;
-  border: 1px solid #606060;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
 .elementor-btn-secondary:hover:not(:disabled) {
-  background: #5a5a5a;
-  border-color: #707070;
+  background: linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
 .elementor-btn-tertiary {
-  background: transparent;
-  color: #4a90e2;
-  border: 1px solid #4a90e2;
+  background: #ffffff;
+  color: #3498db;
+  border: 2px solid #3498db;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
 }
 
 .elementor-btn-tertiary:hover:not(:disabled) {
-  background: #4a90e2;
+  background: #3498db;
   color: white;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
 /* Export Stats */
 .elementor-stats {
-  padding: 12px;
-  background: #2a2a2a;
-  border-radius: 6px;
-  border-left: 3px solid #00d084;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  border-left: 4px solid #28a745;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .elementor-stat-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 4px;
-  font-size: 12px;
+  margin-bottom: 6px;
+  font-size: 13px;
 }
 
 .elementor-stat-item:last-child {
@@ -458,7 +523,12 @@
 }
 
 .elementor-stat-item label {
-  color: #a0a0a0;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+.elementor-stat-item span {
+  color: #2d3748;
   font-weight: 500;
 }
 
@@ -472,10 +542,12 @@
   background: transparent;
   cursor: ew-resize;
   z-index: 1000001;
+  transition: background 0.2s ease;
 }
 
 .elementor-resize-handle:hover {
-  background: #4a90e2;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
 }
 
 .elementor-resize-handle::before {
